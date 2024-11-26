@@ -2,16 +2,28 @@
 include '../koneksi.php';
 
 if (isset($_POST['simpan'])) {
-    $judul_mobil = $_POST['judul_mobil'];
-    $pengarang = $_POST['pengarang'];
-    $penerbit = $_POST['penerbit'];
-    $tahun_terbit = $_POST['tahun_terbit'];
-    $jumlah_mobil = $_POST['jumlah_mobil'];
+    $nama = $_POST['nama'];
+    $merk = $_POST['merk'];
+    $warna = $_POST['warna'];
+    $tahun_pembuatan = $_POST['tahun_pembuatan'];
+    $biaya_sewa = $_POST['biaya_sewa'];
 
+    $gambar = isset($_FILES['gambar']['name']) ? $_FILES['gambar']['name'] : '';
+    $allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
+    $file_extension = pathinfo($gambar, PATHINFO_EXTENSION);
 
-    $query = "INSERT INTO mobil (judul_mobil, pengarang, penerbit, tahun_terbit, jumlah_mobil) VALUES (?, ?, ?, ?, ?)";
+    if (!in_array($file_extension, $allowed_extensions)) {
+        echo "<script>alert('Format gambar tidak valid. Hanya diperbolehkan jpg, jpeg, png, dan gif.')</script>";
+        exit;
+    }
+    $gambar = time() . '.' . $file_extension;
+    $tmp = $_FILES['gambar']['tmp_name'];
+    $dir = "../uploads/";
+    move_uploaded_file($tmp, $dir.$gambar);
+
+    $query = "INSERT INTO mobil (nama, merk, warna, tahun_pembuatan, biaya_sewa, gambar) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "sssii", $judul_mobil, $pengarang, $penerbit, $tahun_terbit, $jumlah_mobil);
+    mysqli_stmt_bind_param($stmt, "sssiis", $nama, $merk, $warna, $tahun_pembuatan, $biaya_sewa, $gambar);
 
     if (mysqli_stmt_execute($stmt)) {
         header('Location: mobil_list.php');
@@ -24,27 +36,31 @@ if (isset($_POST['simpan'])) {
 ?>
 
 <h2>Tambah Mobil</h2>
-<form method="POST" action="" autocomplete="off">
+<form method="POST" action="" enctype="multipart/form-data" autocomplete="off">
     <table>
         <tr>
-            <td>Judul Mobil:</td>
-            <td><input type="text" name="judul_mobil" value="" required></td>
+            <td>Nama Mobil:</td>
+            <td><input type="text" name="nama" value="" required></td>
         </tr>
         <tr>
-            <td>Pengarang:</td>
-            <td><input type="text" name="pengarang" value="" required></td>
+            <td>Merk:</td>
+            <td><input type="text" name="merk" value="" required></td>
         </tr>
         <tr>
-            <td>Penerbit:</td>
-            <td><input type="text" name="penerbit" value="" required></td>
+            <td>Warna:</td>
+            <td><input type="text" name="warna" value="" required></td>
         </tr>
         <tr>
-            <td>Tahun Terbit:</td>
-            <td><input type="number" name="tahun_terbit" value="" required></td>
+            <td>Tahun Pembuatan:</td>
+            <td><input type="number" name="tahun_pembuatan" value="" required></td>
         </tr>
         <tr>
-            <td>Jumlah Mobil:</td>
-            <td><input type="number" name="jumlah_mobil" value="" required></td>
+            <td>Biaya Sewa:</td>
+            <td><input type="number" name="biaya_sewa" value="" required></td>
+        </tr>
+        <tr>
+            <td>Gambar:</td>
+            <td><input type="file" name="gambar" required></td>
         </tr>
         <tr>
             <td></td>

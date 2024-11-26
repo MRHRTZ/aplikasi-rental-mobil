@@ -52,6 +52,7 @@ $result = mysqli_query($conn, $query);
                 <td><?php echo $row['alamat']; ?></td>
                 <td><?php echo $row['no_telp']; ?></td>
                 <td>
+                    <a href="pengguna_view.php?id=<?php echo $row['id_pengguna']; ?>">View</a>
                     <a href="pengguna_edit.php?id=<?php echo $row['id_pengguna']; ?>">Edit</a>
                     <a href="pengguna_hapus.php?id=<?php echo $row['id_pengguna']; ?>">Hapus</a>
                 </td>

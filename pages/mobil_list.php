@@ -61,6 +61,7 @@ $result = mysqli_query($conn, $query);
                     <img src="../uploads/<?php echo $row['gambar']; ?>" class="car-img" alt="">
                 </td>
                 <td>
+                    <a href="mobil_view.php?id=<?php echo $row['id_mobil']; ?>" >View</a>
                     <a href="mobil_edit.php?id=<?php echo $row['id_mobil']; ?>" >Edit</a>
                     <a href="mobil_hapus.php?id=<?php echo $row['id_mobil']; ?>">Hapus</a>
                 </td>

@@ -34,10 +34,7 @@ $result = mysqli_query($conn, $query);
     </style>
 </head>
 
-<h1>Daftar Rental</h1>
-<div style="margin-bottom: 20px; text-align: right;">
-    <a href="rental_tambah.php">Tambah Rental</a>
-</div>
+<h1>Laporan</h1>
 <table border="1">
     <thead>
         <tr>
@@ -46,31 +43,28 @@ $result = mysqli_query($conn, $query);
             <th>Alamat</th>
             <th>No Telp</th>
             <th>Nama Mobil</th>
-            <th>Biaya Sewa</th>
-            <th>Tanggal Rental</th>
+            <th>Total Biaya</th>
+            <th>Tanggal Pinjam</th>
             <th>Tanggal Kembali</th>
             <th>Gambar</th>
-            <th>Aksi</th>
         </tr>
     </thead>
     <tbody>
-        <?php while($row = mysqli_fetch_assoc($result)): ?>
+        <?php 
+            while($row = mysqli_fetch_assoc($result)): 
+                $total_biaya = $row['biaya_sewa'] * (strtotime($row['tanggal_kembali']) - strtotime($row['tanggal_rental'])) / (60 * 60 * 24);
+        ?>
             <tr>
                 <td><?php echo $row['id_rental']; ?></td>
                 <td><?php echo $row['nama']; ?></td>
                 <td><?php echo $row['alamat']; ?></td>
                 <td><?php echo $row['no_telp']; ?></td>
                 <td><?php echo $row['mobil']; ?></td>
-                <td><?php echo $row['biaya_sewa']; ?></td>
+                <td><?php echo $total_biaya; ?></td>
                 <td><?php echo $row['tanggal_rental']; ?></td>
                 <td><?php echo $row['tanggal_kembali']; ?></td>
                 <td>
                     <img src="../uploads/<?php echo $row['gambar']; ?>" class="car-img" alt="">
-                </td>
-                <td>
-                    <a href="rental_view.php?id=<?= $row['id_rental']; ?>" >View</a>
-                    <a href="rental_edit.php?id=<?= $row['id_rental']; ?>" >Edit</a>
-                    <a href="rental_hapus.php?id=<?= $row['id_rental']; ?>">Hapus</a>
                 </td>
             </tr>
         <?php endwhile; ?>

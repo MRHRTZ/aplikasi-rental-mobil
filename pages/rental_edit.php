@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
     $query_pengguna = "SELECT * FROM pengguna WHERE peran = 'anggota'";
     $pengguna = mysqli_query($conn, $query_pengguna);
 
-    $query_mobil = "SELECT * FROM mobil";
+    $query_mobil = "SELECT id_mobil, nama as mobil FROM mobil";
     $mobil = mysqli_query($conn, $query_mobil);
 }
 
@@ -18,16 +18,16 @@ if (isset($_POST['update'])) {
     $id = $_POST['id'];
     $id_pengguna = $_POST['id_pengguna'];
     $id_mobil = $_POST['id_mobil'];
-    $tanggal_pinjam = $_POST['tanggal_pinjam'];
+    $tanggal_rental = $_POST['tanggal_rental'];
     $tanggal_kembali = $_POST['tanggal_kembali'];
 
     $query_pinjam = "SELECT * FROM rental WHERE id_rental = $id";
     $pinjam_query = mysqli_query($conn, $query_pinjam);
     $pinjam = mysqli_fetch_assoc($pinjam_query);
 
-    $query = "UPDATE rental SET id_pengguna=?, id_mobil=?, tanggal_pinjam=?, tanggal_kembali=? WHERE id_rental=?";
+    $query = "UPDATE rental SET id_pengguna=?, id_mobil=?, tanggal_rental=?, tanggal_kembali=? WHERE id_rental=?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'iissi', $id_pengguna, $id_mobil, $tanggal_pinjam, $tanggal_kembali, $id);
+    mysqli_stmt_bind_param($stmt, 'iissi', $id_pengguna, $id_mobil, $tanggal_rental, $tanggal_kembali, $id);
 
     if (mysqli_stmt_execute($stmt)) {
         header('Location: rental_list.php');
@@ -57,14 +57,14 @@ if (isset($_POST['update'])) {
             <td>
                 <select name="id_mobil" required>
                     <?php while ($row = mysqli_fetch_assoc($mobil)) : ?>
-                        <option value="<?php echo $row['id_mobil']; ?>" <?= $rental['id_mobil'] == $row['id_mobil'] ? 'selected' : '' ?>><?php echo $row['judul_mobil']; ?></option>
+                        <option value="<?php echo $row['id_mobil']; ?>" <?= $rental['id_mobil'] == $row['id_mobil'] ? 'selected' : '' ?>><?php echo $row['mobil']; ?></option>
                     <?php endwhile; ?>
                 </select>
             </td>
         </tr>
         <tr>
             <td>Tanggal Pinjam:</td>
-            <td><input type="date" name="tanggal_pinjam" value="<?php echo $rental['tanggal_pinjam']; ?>" required></td>
+            <td><input type="date" name="tanggal_rental" value="<?php echo $rental['tanggal_rental']; ?>" required></td>
         </tr>
         <tr>
             <td>Tanggal Kembali:</td>
