@@ -61,8 +61,8 @@ $result = mysqli_query($conn, $query);
                 <td><?php echo $row['no_telp']; ?></td>
                 <td><?php echo $row['mobil']; ?></td>
                 <td><?php echo $total_biaya; ?></td>
-                <td><?php echo $row['tanggal_rental']; ?></td>
-                <td><?php echo $row['tanggal_kembali']; ?></td>
+                <td><?php echo date('d-m-Y', strtotime($row['tanggal_rental'])); ?></td>
+                <td><?php echo date('d-m-Y', strtotime($row['tanggal_kembali'])); ?></td>
                 <td>
                     <img src="../uploads/<?php echo $row['gambar']; ?>" class="car-img" alt="">
                 </td>
