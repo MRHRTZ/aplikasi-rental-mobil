@@ -44,6 +44,8 @@ $result = mysqli_query($conn, $query);
             <th>Warna</th>
             <th>Tahun Pembuatan</th>
             <th>Biaya Sewa (perhari)</th>
+            <th>Unit</th>
+            <th>No Plat</th>
             <th>Gambar</th>
             <th>Aksi</th>
         </tr>
@@ -56,7 +58,9 @@ $result = mysqli_query($conn, $query);
                 <td><?php echo $row['merk']; ?></td>
                 <td><?php echo $row['warna']; ?></td>
                 <td><?php echo $row['tahun_pembuatan']; ?></td>
-                <td><?php echo $row['biaya_sewa']; ?></td>
+                <td class="rupiah"><?php echo $row['biaya_sewa']; ?></td>
+                <td><?php echo $row['unit']; ?></td>
+                <td><?php echo $row['no_plat']; ?></td>
                 <td>
                     <img src="../uploads/<?php echo $row['gambar']; ?>" class="car-img" alt="">
                 </td>
@@ -69,6 +73,20 @@ $result = mysqli_query($conn, $query);
         <?php endwhile; ?>
     </tbody>
 </table>
+
+<script>
+    const rupiah = (number) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0
+        }).format(number);
+    }
+
+    document.querySelectorAll('.rupiah').forEach(function(obj) {
+        obj.textContent = rupiah(Number(obj.textContent));
+    });
+</script>
 
 <?php
 mysqli_close($conn);

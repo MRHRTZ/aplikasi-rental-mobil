@@ -15,6 +15,17 @@ if (isset($_POST['update'])) {
     $warna = $_POST['warna'];
     $tahun_pembuatan = $_POST['tahun_pembuatan'];
     $biaya_sewa = $_POST['biaya_sewa'];
+    $unit = $_POST['unit'];
+    $no_plat = $_POST['no_plat'];
+
+    
+    // validasi no plat dengan separated comma harus sesuai dengan jumlah unit
+    $no_plat = preg_replace('/\s*,\s*/', ',', $no_plat);
+    $arr_no_plat = explode(',', $no_plat);
+    if (count($arr_no_plat) != $unit) {
+        echo "<script>alert('Jumlah no plat tidak sesuai dengan jumlah unit, harap input menggunakam koma terpisah, Contoh: no plat 1, no plat 2, dst'); window.location.href='mobil_edit.php?id=$id'</script>";
+        exit;
+    }
 
     if (!empty($_FILES['gambar']['name'])) {
         $gambar = $_FILES['gambar']['name'];
@@ -35,13 +46,13 @@ if (isset($_POST['update'])) {
             unlink($dir.$old_image);
         }
 
-        $query = "UPDATE mobil SET nama=?, merk=?, warna=?, tahun_pembuatan=?, biaya_sewa=?, gambar=? WHERE id_mobil=?";
+        $query = "UPDATE mobil SET nama=?, merk=?, warna=?, tahun_pembuatan=?, biaya_sewa=?, gambar=?, unit=?, no_plat=? WHERE id_mobil=?";
         $stmt = mysqli_prepare($conn, $query);
-        mysqli_stmt_bind_param($stmt, 'ssssisi', $nama, $merk, $warna, $tahun_pembuatan, $biaya_sewa, $gambar, $id);
+        mysqli_stmt_bind_param($stmt, 'sssiisisi', $nama, $merk, $warna, $tahun_pembuatan, $biaya_sewa, $gambar, $unit, $no_plat, $id);
     } else {
-        $query = "UPDATE mobil SET nama=?, merk=?, warna=?, tahun_pembuatan=?, biaya_sewa=? WHERE id_mobil=?";
+        $query = "UPDATE mobil SET nama=?, merk=?, warna=?, tahun_pembuatan=?, biaya_sewa=?, unit=?, no_plat=? WHERE id_mobil=?";
         $stmt = mysqli_prepare($conn, $query);
-        mysqli_stmt_bind_param($stmt, 'ssssii', $nama, $merk, $warna, $tahun_pembuatan, $biaya_sewa, $id);
+        mysqli_stmt_bind_param($stmt, 'sssiiisi', $nama, $merk, $warna, $tahun_pembuatan, $biaya_sewa, $unit, $no_plat, $id);
     }
 
     if (mysqli_stmt_execute($stmt)) {
@@ -85,6 +96,14 @@ if (isset($_POST['update'])) {
         <tr>
             <td>Biaya Sewa:</td>
             <td><input type="number" name="biaya_sewa" value="<?php echo $mobil['biaya_sewa']; ?>" required></td>
+        </tr>
+        <tr>
+            <td>Unit:</td>
+            <td><input type="number" name="unit" value="<?php echo $mobil['unit']; ?>" required></td>
+        </tr>
+        <tr>
+            <td>No Plat:</td>
+            <td><input type="text" name="no_plat" value="<?php echo $mobil['no_plat']; ?>" required></td>
         </tr>
         <tr>
             <td>Gambar:</td>

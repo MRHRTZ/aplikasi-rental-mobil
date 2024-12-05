@@ -7,6 +7,16 @@ if (isset($_POST['simpan'])) {
     $warna = $_POST['warna'];
     $tahun_pembuatan = $_POST['tahun_pembuatan'];
     $biaya_sewa = $_POST['biaya_sewa'];
+    $unit = $_POST['unit'];
+    $no_plat = $_POST['no_plat'];
+
+    // validasi no plat dengan separated comma harus sesuai dengan jumlah unit
+    $no_plat = preg_replace('/\s*,\s*/', ',', $no_plat);
+    $arr_no_plat = explode(',', $no_plat);
+    if (count($arr_no_plat) != $unit) {
+        echo "<script>alert('Jumlah no plat tidak sesuai dengan jumlah unit, harap input menggunakam koma terpisah, Contoh: no plat 1, no plat 2, dst'); window.location.href='mobil_tambah.php'</script>";
+        exit;
+    }
 
     $gambar = isset($_FILES['gambar']['name']) ? $_FILES['gambar']['name'] : '';
     $allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
@@ -21,9 +31,9 @@ if (isset($_POST['simpan'])) {
     $dir = "../uploads/";
     move_uploaded_file($tmp, $dir.$gambar);
 
-    $query = "INSERT INTO mobil (nama, merk, warna, tahun_pembuatan, biaya_sewa, gambar) VALUES (?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO mobil (nama, merk, warna, tahun_pembuatan, biaya_sewa, gambar, unit, no_plat) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "sssiis", $nama, $merk, $warna, $tahun_pembuatan, $biaya_sewa, $gambar);
+    mysqli_stmt_bind_param($stmt, "sssiisis", $nama, $merk, $warna, $tahun_pembuatan, $biaya_sewa, $gambar, $unit, $no_plat);
 
     if (mysqli_stmt_execute($stmt)) {
         header('Location: mobil_list.php');
@@ -57,6 +67,14 @@ if (isset($_POST['simpan'])) {
         <tr>
             <td>Biaya Sewa:</td>
             <td><input type="number" name="biaya_sewa" value="" required></td>
+        </tr>
+        <tr>
+            <td>Unit:</td>
+            <td><input type="number" name="unit" value="" required></td>
+        </tr>
+        <tr>
+            <td>No Plat:</td>
+            <td><input type="text" name="no_plat" value="" placeholder="B 1234 XXX,D 1234 XXX,..." required></td>
         </tr>
         <tr>
             <td>Gambar:</td>

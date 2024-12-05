@@ -4,6 +4,17 @@ include '../koneksi.php';
 if (isset($_GET['confirm']) && $_GET['confirm'] == 'true') {
     $id = $_GET['id'];
 
+    $query_mobil = "SELECT * FROM mobil WHERE id_mobil = $id";
+    $mobil_query = mysqli_query($conn, $query_mobil);
+    $mobil = mysqli_fetch_assoc($mobil_query);
+
+    if ($mobil && isset($mobil['gambar'])) {
+        $gambar_path = '../uploads/' . $mobil['gambar'];
+        if (file_exists($gambar_path)) {
+            unlink($gambar_path);
+        }
+    }
+
     $query = "DELETE FROM mobil WHERE id_mobil = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $id);
