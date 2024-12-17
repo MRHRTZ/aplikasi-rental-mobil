@@ -4,6 +4,22 @@ include '../koneksi.php';
 if (isset($_GET['confirm']) && $_GET['confirm'] == 'true') {
     $id = $_GET['id'];
 
+    // Cek jika sedang di rental
+    $check_rental = "SELECT COUNT(*) as count FROM rental WHERE id_mobil = ?";
+    $check_stmt = $conn->prepare($check_rental);
+    $check_stmt->bind_param("i", $id);
+    $check_stmt->execute();
+    $result = $check_stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if ($row['count'] > 0) {
+        echo "<script>alert('Mobil tidak dapat dihapus karena sedang dirental.');</script>";
+        echo "<script>window.location.href='mobil_list.php';</script>";
+        exit();
+    }
+    $check_stmt->close();
+
+    /// Eksekusi hapus data
     $query_mobil = "SELECT * FROM mobil WHERE id_mobil = $id";
     $mobil_query = mysqli_query($conn, $query_mobil);
     $mobil = mysqli_fetch_assoc($mobil_query);
